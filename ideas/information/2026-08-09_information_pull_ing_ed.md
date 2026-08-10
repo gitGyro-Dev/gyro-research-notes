@@ -64,18 +64,20 @@ The key point is that the flow itself does not stop merely because an Operator l
 
 ---
 
-## 4. Provisional Definition of ～ed
+## 4. Provisional Definition of ～ed / 局所的成立
 
-For the next stage of examination, the following definition is fixed provisionally:
+For the next stage of examination, `～ed` and `局所的成立` are treated as the same provisional concept.
 
-> **～ed = Operatorが、その時点で後続の処理から扱える形になった局所的成立。**
+> **～ed / 局所的成立 = Operatorが、その時点で後続の処理から参照可能・利用可能な形になった局所的成立。**
 
 Important clarifications:
 
 - `～ed` does not mean that the whole ongoing flow has ended.
 - `～ed` does not have to be important.
-- `～ed` does not have to be actually used later; it only needs to have become locally usable at that time.
+- `～ed` does not have to be actually used later.
+- `～ed` only needs to have become available to subsequent processing at that time.
 - `～ed` does not imply permanent retention.
+- availability at the time of establishment and actual later use are separate matters.
 
 This is a working definition to be tested for failure cases.
 
@@ -103,15 +105,13 @@ Under the provisional definition:
 ～ed₂ = OPEN指示
 ```
 
-Each of these can be treated as a local establishment because it has become usable by subsequent processing.
+Each can be treated as a local establishment if it has become available to subsequent processing.
 
-Even `sensor = 0` / `no detection` can be a valid `～ed` if it is used to maintain CLOSE.
+Even `sensor = 0` / `no detection` may be a valid `～ed` if it is available to the control process, whether or not it causes an observable state change.
 
 Therefore:
 
-> `～ed` is not equivalent to “important event.”
-
-It is simply something that has become locally usable by the Operator/system at that point.
+> `～ed` is not equivalent to “important event” or “state change.”
 
 ---
 
@@ -140,13 +140,11 @@ Potential local establishments:
 ～ed₃ = 「ボールだ」
 ```
 
-Each can be used by later processing.
+Each may become available to later processing.
 
 However, the human case is likely to contain many more small and overlapping local establishments than the simplified diagram shows.
 
-The current hypothesis is not “human recognition is fundamentally different because it is complex,” but rather:
-
-> many small local establishments may occur at very short intervals and in overlapping processing chains.
+This should not be used as an escape from falsification. The granularity of `～ed` remains unresolved and is now the primary test target.
 
 ---
 
@@ -170,20 +168,18 @@ That is:
 
 > the larger ongoing flow continues, while local `～ed` states are established within it.
 
-This is considered a more natural model for both automatic-door processing and ball recognition.
-
 ---
 
 ## 8. Retroactive Access / 遡り
 
 The sequence is not necessarily forward-only.
 
-A later state may refer back to earlier local establishments:
+A later process may refer back to earlier local establishments if some form of access remains possible:
 
 ```text
 ～ed₀   ～ed₁   ～ed₂   ～ed₃
    \      |      |      /
-      retroactive PULL
+      retroactive handling
              ↓
       new local establishment
 ```
@@ -192,17 +188,15 @@ A later state may refer back to earlier local establishments:
 
 It means:
 
-> from the current position, earlier local establishments can be handled again if they remain accessible or reconstructable.
+> from the current position, earlier local establishments can be handled again if they remain accessible or can be reconstructed.
+
+The mechanism of access, retention, or reconstruction is not yet fixed.
 
 ---
 
 ## 9. Two Different Types of Retroactive Case
 
-Two cases must be separated.
-
 ### Case A: A new ～ed is established only after retroactive handling
-
-Example:
 
 ```text
 点₀
@@ -212,13 +206,7 @@ Example:
 点₂
 ```
 
-At these earlier points, the relation:
-
-```text
-「近づいている」
-```
-
-may not yet have existed as a local establishment.
+At these earlier points, the relation `「近づいている」` may not yet have existed as a local establishment.
 
 Later, by handling the earlier sequence together:
 
@@ -230,19 +218,11 @@ Later, by handling the earlier sequence together:
 「近づいている」
 ```
 
-A **new current ～ed** is established.
+A **new current ～ed** may be established.
 
-Thus:
-
-> the later `～ed` is not necessarily something that had been hidden in the past waiting to be found.
-
-It may be newly established in the present through retroactive handling of earlier local establishments.
-
----
+This does not require the later result to have existed previously as a hidden stored item.
 
 ### Case B: A past ～ed existed, but is no longer currently usable
-
-Example:
 
 ```text
 時点 t0
@@ -264,10 +244,6 @@ Therefore:
 後から遡れる
 ```
 
-This distinction is important.
-
-An `～ed` may have existed at one time without being permanently retained or recoverable.
-
 ---
 
 ## 10. Example: “ずっとOPENだった”
@@ -280,32 +256,13 @@ OPEN₀ → OPEN₁ → OPEN₂ → OPEN₃
 
 Each `OPENₙ` may be a separate local establishment.
 
-Later, by handling them together:
+Later, if the earlier states remain accessible or reconstructable, handling them together may establish:
 
 ```text
-OPEN₀
-OPEN₁
-OPEN₂
-OPEN₃
-  ↑
-retroactive handling
-  ↓
 「ずっとOPENだった」
 ```
 
-`「ずっとOPENだった」` does not need to have been stored previously as a single `～ed`.
-
-It may be a newly established current result derived from the relation among multiple earlier local establishments.
-
-The same applies to:
-
-```text
-「近づいている」
-「繰り返している」
-「以前と違う」
-```
-
-These may depend on relations among multiple local establishments rather than a single point.
+This result need not have existed previously as a single stored `～ed`.
 
 ---
 
@@ -330,51 +287,29 @@ The distinction is primarily structural:
 新しい～ed
 ```
 
-These stages may occur within an extremely short real-time interval.
-
-So, from an external perspective, they may appear almost simultaneous and continuous.
-
-This is why:
-
-```text
-ボールを見る
-↓
-「あ、ボールがこっちに飛んできている」
-```
-
-can look like one continuous real-time event even if many local establishments and retroactive references are structurally involved.
+These stages may occur within an extremely short real-time interval and appear externally as one continuous process.
 
 ---
 
 ## 12. Retention Is Separate from ～ed
 
-One of the important corrections is:
+Local establishment and retention are separate questions.
 
-> local establishment and retention must not be conflated.
+An `～ed` may have been available at one time and later become inaccessible.
 
-For example, in an automatic door:
+Retroactive handling therefore requires some form of current access to earlier establishments, but this access might arise from direct retention, compressed residue, reconstruction, or another mechanism not yet fixed.
 
-```text
-10:00:01 sensor=0 → ～ed
-10:00:02 sensor=0 → ～ed
-10:00:03 sensor=1 → ～ed
-```
-
-If no log is kept, the earlier values may no longer be available later.
-
-Thus:
+For now:
 
 ```text
-～ed成立
-   ↓
-┌───────────────┐
-│ immediately used │
-│ retained          │
-│ discarded / lost  │
-└───────────────┘
+成立した
+≠
+保持された
+≠
+現在アクセス可能
+≠
+後から再構成可能
 ```
-
-The retention path is a separate issue.
 
 ---
 
@@ -397,81 +332,187 @@ The retention path is a separate issue.
                   next processing...
 ```
 
-The larger `～ing` continues throughout this process.
-
-Local establishments may be created, used, retained, lost, or later re-used.
+This is still a descriptive image, not a formal model.
 
 ---
 
-## 14. What Is Still Unfixed
+## 14. Claude Review: Accepted Corrections
 
-The following remain intentionally open:
+The following corrections from external review are accepted for the next test cycle:
 
-- whether `～ed` and `局所的成立` are ultimately identical terms
-- whether PULL always occurs before or after `～ed`, or whether both patterns exist
-- what determines the granularity of `～ed`
-- what or who makes something become `～ed`
-- whether retroactive access is continuous or only occasional
-- whether earlier `～ed` values are stored, reconstructed, or both
-- how Operator orientation should be represented
-- where “information” itself should be placed in this process
-- whether `～ing / ～ed` terminology should later be replaced with neutral symbols
-- how this model differs from or overlaps with existing theories such as state estimation, smoothing, active inference, phenomenology of retention, and process/event models
+1. `扱える` must mean **available / usable in principle by subsequent processing**, not necessarily actually used.
+2. actual use and local establishment must be separated.
+3. `～ed` and `局所的成立` will be treated as the same provisional concept for now.
+4. Test 1 in the previous version was effectively tautological under the definition and is removed as a primary falsification test.
+5. retroactive handling implicitly requires some form of access to earlier establishments; this dependency must be explicit.
+6. human complexity or overlap must not be used as a catch-all explanation when the granularity criterion is unclear.
 
 ---
 
-## 15. Immediate Test Questions
+# 15. Test 6 — Minimal Conditions for ～ed / 局所的成立
 
-The next stage should actively try to break the provisional definition of `～ed`.
+This section is the only active focus for the next discussion cycle.
 
-### Test 1
+The aim is not to define a threshold, purpose, importance, or full Operator architecture.
 
-Can there be something that appears locally established but is not usable by any subsequent processing?
+The question is:
 
-### Test 2
+> **What is the smallest set of conditions under which something can be said to have become a local establishment (`～ed`) for an Operator?**
 
-Can a process continue without any identifiable `～ed` being established?
+The current candidate set is intentionally minimal and provisional.
 
-### Test 3
+## Candidate C1 — Something is available to the Operator/system
 
-Can two Operators derive contradictory `～ed` values from the same ongoing `～ing`?
+There must be something that can enter or participate in the Operator's processing.
 
-### Test 4
+This does **not** yet require:
 
-Can a later `～ed` be established only through retroactive handling of multiple earlier `～ed` values?
+- importance
+- novelty
+- explicit purpose
+- conscious attention
+- a state change
 
-### Test 5
+Question:
 
-Can a past `～ed` have existed but become permanently inaccessible later?
+> Can `～ed` exist if nothing is available to the Operator at all?
 
-### Test 6
-
-What is the smallest set of conditions under which `～ed` can be said to have been established without relying on vague terms such as “importance,” “purpose,” or “threshold”?
-
----
-
-## 16. Working Definition for Review
-
-For this review cycle, use the following as the primary provisional definition:
-
-> **～ed = Operatorが、その時点で後続の処理から扱える形になった局所的成立。実際に後続処理で使われる必要はなく、永続的に保持される必要もない。**
-
-This definition should be treated as provisional and should be challenged rather than protected.
+If the answer is no, C1 may be necessary.
 
 ---
 
-## 17. Review Request
+## Candidate C2 — It becomes distinguishable in processing
 
-Please review this note with particular attention to:
+The candidate must become distinguishable enough that subsequent processing could treat it as this rather than an entirely undifferentiated continuation.
 
-1. logical contradictions
-2. ambiguity in the provisional definition of `～ed`
-3. examples where the definition fails
-4. cases where retroactive handling cannot be explained naturally
-5. hidden assumptions about retention or memory
-6. over-generalization from automatic-door and ball-recognition examples
-7. overlap with existing theories
-8. what should remain unfixed for now
-9. what single issue should be tested next
+Examples:
 
-Do not assume the model is correct. Prefer counterexamples and boundary cases over supportive reinterpretation.
+```text
+sensor=0
+sensor=1
+```
+
+or
+
+```text
+何かある
+何か動いている
+```
+
+This does not mean that the Operator needs a linguistic label or conscious recognition.
+
+Question:
+
+> Is distinguishability really necessary, or is availability alone sufficient?
+
+This is deliberately unresolved.
+
+---
+
+## Candidate C3 — It is available to subsequent processing
+
+The candidate must have become usable or referable by some subsequent processing path at that time.
+
+Actual use is not required.
+
+```text
+～ed成立
+   ↓
+後続処理Aから使われる
+後続処理Bからは使われない
+どこからも実際には使われない
+```
+
+All three may still satisfy C3 if the result was available to at least one possible subsequent processing path at the time of establishment.
+
+Question:
+
+> Is “availability to at least one subsequent processing path” sufficient, or does this merely restate the current definition?
+
+This is a central risk of circularity.
+
+---
+
+# 16. Minimal Test Matrix
+
+The next wall-bouncing session should test only C1–C3.
+
+| Case | C1 Available | C2 Distinguishable | C3 Available to later processing | Candidate ～ed? | Why? |
+|---|---:|---:|---:|---|---|
+| Automatic door: sensor=0 sampled normally | Yes | Yes | Yes | likely Yes | control path can reference it |
+| Automatic door: analog voltage changes but is never sampled | ? | ? | No | unclear / likely No | ongoing flow may never become locally usable |
+| Automatic door: sampled value immediately corrupted before any downstream access | Yes? | Yes? | No? | boundary case | tests whether establishment precedes downstream accessibility |
+| Ball: color becomes available but is never used for avoidance | Yes | Yes | Yes? | likely Yes | actual use is unnecessary |
+| Ball: visual variation exists but never becomes distinguishable to processing | Yes? | No | No? | unclear | tests necessity of distinguishability |
+| Repeated identical sensor=0 values | Yes | Yes? | Yes | unclear | tests whether change/novelty is required |
+
+The table is intentionally unresolved. The purpose is to expose which candidate conditions do real work.
+
+---
+
+# 17. Specific Questions for the Next Discussion
+
+Do not add new concepts before testing these questions.
+
+1. **Is C1 necessary?**  
+   Can there be local establishment without anything being available to the Operator/system?
+
+2. **Is C2 necessary?**  
+   If something participates in processing but never becomes distinguishable from the ongoing continuation, can it still count as `～ed`?
+
+3. **Is C3 independent of C1/C2?**  
+   Or does “available to subsequent processing” merely repeat what `～ed` means?
+
+4. **Is change required?**  
+   Can `sensor=0` followed by another `sensor=0` produce separate `～ed₀` and `～ed₁` without any value change?
+
+5. **Is novelty required?**  
+   If the same local result occurs repeatedly, does each occurrence remain a local establishment?
+
+6. **Can an ～ed exist with no observable consequence?**  
+   If it becomes available but no downstream path actually consumes it, does the definition still hold?
+
+7. **Where exactly does the corrupted-sample case fail?**  
+   If a value is formed but destroyed before any downstream path can access it, was there an `～ed` for an instant, or not?
+
+These questions should be tested first with the automatic-door case, then with ball recognition only if the same distinction remains meaningful.
+
+---
+
+## 18. What Remains Explicitly Out of Scope for Test 6
+
+Do not settle these during the Test 6 cycle unless strictly necessary:
+
+- full definition of Operator
+- physical mechanism of sensing
+- exact granularity or threshold
+- purpose / attention / priority
+- PULL ordering
+- retention architecture
+- retroactive reconstruction mechanism
+- information definition
+- Gyro mapping
+- formal mathematical notation
+- replacement of `～ing / ～ed` terminology
+
+The purpose of Test 6 is narrower:
+
+> **reduce the establishment condition as far as possible without making it circular or vacuous.**
+
+---
+
+## 19. Review Request for Test 6
+
+Please challenge only the proposed minimal conditions C1–C3.
+
+Focus on:
+
+1. whether any condition is redundant
+2. whether any condition is circular
+3. a counterexample where C1–C3 all appear satisfied but `～ed` should still not be said to exist
+4. a counterexample where one of C1–C3 fails but `～ed` still appears to exist
+5. whether repeated identical inputs can generate distinct local establishments without introducing an explicit threshold or clock
+6. whether the corrupted-sample case exposes a missing distinction
+7. the smallest revision that would make the candidate conditions more testable
+
+Do not broaden the review into a general theory of information, cognition, memory, or Gyro unless a direct contradiction requires it.
